@@ -314,7 +314,10 @@ class Category(object):
         return self.name
 
     def __lt__(self, other):
-        return self.name < other.name
+        if isinstance(other, str):
+            return self.name < other
+        else:
+            return self.name < other.name
 
     def __eq__(self, other):
         return not self < other and not other < self
@@ -323,7 +326,10 @@ class Category(object):
         return self < other or other < self
 
     def __gt__(self, other):
-        return other < self
+        if isinstance(other, str):
+            return other < self.name
+        else:
+            return other < self
 
     def __ge__(self, other):
         return not self < other
