@@ -255,10 +255,23 @@ class Post(object):
                                            y['categories'].split(",")])
         except:
             pass
+
         try:
-            self.tags = set([x.strip() for x in y['tags'].split(",")])
+            if config.tags.case_sensitive:
+                self.tags = set([Tag(x.strip()) for x in \
+                                           y['tags'].split(",")])
+            else:
+                self.tags = set([Tag(x.strip().lower()) for x in \
+                                           y['tags'].split(",")])
         except:
             pass
+
+        
+        # try:
+        #     self.tags = set([x.strip() for x in y['tags'].split(",")])
+        # except:
+        #     pass
+        
         try:
              # Filter is a synonym for filters
             self.filters = y['filter']
@@ -337,6 +350,46 @@ class Category(object):
     def __le__(self, other):
         return not other < self
 
+class Tag(object):
+    def __init__(self, name):
+        self.name = str(name)
+        # TODO: consider making url_name and path read-only properties?
+        self.url_name = create_slug(self.name)
+        self.path = bf.util.site_path_helper(
+                blog_config.path,
+                blog_config.tag_dir,
+                self.url_name,
+                trailing_slash=True)
+
+    def __hash__(self):
+        return hash(self.name)
+
+    def __repr__(self):
+        return self.name
+
+    def __lt__(self, other):
+        if isinstance(other, str):
+            return self.name < other
+        else:
+            return self.name < other.name
+
+    def __eq__(self, other):
+        return not self < other and not other < self
+
+    def __ne__(self, other):
+        return self < other or other < self
+
+    def __gt__(self, other):
+        if isinstance(other, str):
+            return other < self.name
+        else:
+            return other < self
+
+    def __ge__(self, other):
+        return not self < other
+
+    def __le__(self, other):
+        return not other < self
 
 def create_guid(title, date):
     to_hash = (bytes(date.isoformat() + title, 'utf-8') if six.PY3
