@@ -10,7 +10,6 @@ from blogofile.cache import bf
 from blogofile.cache import HierarchicalCache as HC
 import blogofile_blog
 
-
 meta = {
     "name": "Blog",
     "author": "Ryan McGuire",
@@ -60,6 +59,7 @@ def run():
     from . import post
     from . import archives
     from . import categories
+    from . import tags
     from . import chronological
     from . import feed
     from . import permapage
@@ -79,12 +79,16 @@ def run():
                               #   num_in_archive1), ...]
                               # (sorted in reverse by date)
     blog.categorized_posts = {}  # "Category Name" -> [post, post, ... ]
+    blog.tagged_posts = {}
     blog.all_categories = []  # [("Category 1",num_in_category_1), ...]
                               # (sorted alphabetically)
+    blog.all_tags = []
     archives.sort_into_archives()
     categories.sort_into_categories()
+    tags.sort_into_tags()
     permapage.run()
     chronological.run()
     archives.run()
     categories.run()
+    tags.run()
     feed.run()
