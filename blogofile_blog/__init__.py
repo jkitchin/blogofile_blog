@@ -104,6 +104,7 @@ config = HC(
     # http://www.yourblog.com/blog_root/category/your-topic/4
     # You can rename the "category" part here:
     category_dir="category",
+    tag_dir="tag",
     priority=90.0,
     base_template="site.mako",
     #Alternative template engine content blocks:
